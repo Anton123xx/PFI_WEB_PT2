@@ -73,8 +73,8 @@ function attachCmd() {
     $('#editProfilCmd').on('click', renderEditProfilForm);
     $('#aboutCmd').on("click", renderAbout);
 
-    
-  
+
+
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Header management
@@ -426,9 +426,41 @@ function renderNewPicForm()/////////////
         API.CreatePhoto(photo);
     });
 }
-async function renderPhotosList() {
+async function renderPhotosList()////////////////
+{
     eraseContent();
-    $("#content").append("<h2> En construction </h2>");
+    $("#content").append("en construction");
+
+    /*
+    let everyPic = await API.GetPhotos();
+
+    if (API.error) {
+        renderError();//FAUT FIGURE OUT UPLOAD DE PICS AVANT PCQ YA ZERO PICS PENSE POUR SA 
+    } else {
+        everyPic.forEach((photo) => {
+            if(shared)///CHEKER RENDERMANAGEDUSER POUR INSPIRATION
+            { //FAUDRA DONNER ID POUR FAIRE LE ONCLICK(RENDERPIC)
+                let photoRow = `
+                <div class="photosLayout""> 
+                    
+                        <div class="photoLayout">
+                        <span class="photoTitle">${photo.Title}</span>
+                        <span class="photoImage">${photo.Image}</span>
+                        <span class="photoCreationDate  ">${photo.Date}</span>
+                        <span class="photoCreationDate  ">${photo.LikeCounter}</span>
+                        </div>
+                        
+                </div>           
+                `;
+                        console.log(photo);
+            }
+          
+        });
+        $("#content").append(photoRow);
+    }
+
+
+    */
 }
 function renderVerify() {
     eraseContent();

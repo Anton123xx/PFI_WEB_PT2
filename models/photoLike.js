@@ -1,5 +1,5 @@
 
-export default class PhotoLike {
+export default class PhotoLike extends Model {
     
     constructor() {
         this.likes = 0;

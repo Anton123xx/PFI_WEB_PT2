@@ -1,6 +1,6 @@
 import Model from './model.js';
 import UserModel from './user.js';
-import PhotoLikeModel from './photoLike.js';
+//import PhotoLikeModel from './photoLike.js';/////WHAT THE FUCK
 import Repository from '../models/repository.js';
 
 export default class Photo extends Model {
@@ -13,11 +13,12 @@ export default class Photo extends Model {
         this.addField('Image', 'asset');
         this.addField('Date','integer');
         this.addField('Shared','boolean');
-
+///AJOUTER LIKE COUNTER ???????????
         this.setKey("Title");
     }
 
     bindExtraData(instance) {
+        console.log(instance);
         instance = super.bindExtraData(instance);
         let usersRepository = new Repository(new UserModel());
         instance.Owner = usersRepository.get(instance.OwnerId);
