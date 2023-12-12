@@ -8,7 +8,7 @@ let EmailError = "";
 let passwordError = "";
 let currentETag = "";
 let currentViewName = "photosList";
-let delayTimeOut = 200; // seconds
+let delayTimeOut = 900; // seconds
 
 // pour la pagination
 let photoContainerWidth = 400;
@@ -65,12 +65,16 @@ function installWindowResizeHandler() {
 function attachCmd() {
     $('#loginCmd').on('click', renderLoginForm);
     $('#logoutCmd').on('click', logout);
+    $('#newPhotoCmd').on("click", renderNewPicForm);////?????
     $('#listPhotosCmd').on('click', renderPhotos);
     $('#listPhotosMenuCmd').on('click', renderPhotos);
     $('#editProfilMenuCmd').on('click', renderEditProfilForm);
     $('#renderManageUsersMenuCmd').on('click', renderManageUsers);
     $('#editProfilCmd').on('click', renderEditProfilForm);
     $('#aboutCmd').on("click", renderAbout);
+
+    
+  
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Header management
@@ -352,9 +356,79 @@ async function renderPhotos() {
         renderLoginForm();
     }
 }
+
+
+function renderNewPicForm()/////////////
+{
+    noTimeout();
+    eraseContent();
+    UpdateHeader("Ajout de photos", "addPic");
+    //$("#newPhotoCmd").hide();
+    $("#content").append(`
+        <br/>
+        <form class="form" id="uploadNewPicForm"'>
+            
+               
+            <fieldset>
+                <legend>Informations</legend>
+                <input  type="text" 
+                        class="form-control Alpha" 
+                        name="Name" 
+                        id="Name"
+                        placeholder="Titre" 
+                        required 
+                        RequireMessage = 'Veuillez entrer un titre'
+                        InvalidMessage = 'Titre invalide'/>
+
+                <textarea  type="textbox" 
+                        class="form-control Alpha" 
+                        name="Description" 
+                        id="Description"
+                        placeholder="Description" 
+                        required 
+                        RequireMessage = 'Veuillez entrer une description'
+                        InvalidMessage = 'Description invalide'> </textarea>
+
+                <input  type="checkbox"   
+                        name="Share" 
+                        id="Share" />
+
+                <label for="Share">Partagée</label>
+
+            </fieldset>
+            <fieldset>
+                <legend>Image</legend>
+                <div class='imageUploader' 
+                        newImage='true' 
+                        controlId='Image' 
+                        imageSrc='images/PhotoCloudLogo.png' 
+                        waitingImage="images/Loading_icon.gif">
+            </div>
+            </fieldset>
+   
+            <input type='submit' name='submit' id='saveUser' value="Enregistrer" class="form-control btn-primary">
+        </form>
+        <div class="cancel">
+            <button class="form-control btn-secondary" id="abortCreateProfilCmd">Annuler</button>
+        </div>
+    `);
+    //$('#loginCmd').on('click', renderLoginForm);
+    initFormValidation(); // important do to after all html injection!
+    initImageUploaders();
+    $('#abortCreateProfilCmd').on('click', renderPhotos);
+    //addConflictValidation(API.checkConflictURL(), 'Email', 'saveUser');
+    $('#uploadNewPicForm').on("submit", function (event) {
+        let photo = getFormData($('#uploadNewPicForm'));
+        //delete profil.matchedPassword;
+        //delete profil.matchedEmail;
+        event.preventDefault();
+        showWaitingGif();
+        API.CreatePhoto(photo);
+    });
+}
 async function renderPhotosList() {
     eraseContent();
-    $("#content").append("<h2> En contruction </h2>");
+    $("#content").append("<h2> En construction </h2>");
 }
 function renderVerify() {
     eraseContent();
