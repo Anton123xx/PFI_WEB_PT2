@@ -380,14 +380,14 @@ function renderNewPicForm()/////////////
                         RequireMessage = 'Veuillez entrer un titre'
                         InvalidMessage = 'Titre invalide'/>
 
-                <textarea  type="textbox" 
-                        class="form-control Alpha" 
-                        name="Description" 
+                
+                        <textarea
+                        class="form-control Alpha"
+                        name="Description"
                         id="Description"
-                        placeholder="Description" 
-                        required 
-                        RequireMessage = 'Veuillez entrer une description'
-                        InvalidMessage = 'Description invalide'> </textarea>
+                        placeholder="Description"
+                        required
+                    ></textarea>
 
                 <input  type="checkbox"   
                         name="Share" 
