@@ -386,7 +386,6 @@ function renderNewPicForm()/////////////
                         name="Description"
                         id="Description"
                         placeholder="Description"
-                        required
                     ></textarea>
 
                 <input  type="checkbox"   

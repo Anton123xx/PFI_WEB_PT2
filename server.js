@@ -17,6 +17,13 @@ RouteRegister.add('GET', 'accounts', 'remove');
 RouteRegister.add('GET', 'accounts', 'conflict');
 RouteRegister.add('POST', 'accounts', 'block');
 RouteRegister.add('POST', 'accounts', 'promote');
+////POUR VAS CALL CONTROLLER DE PHOTO
+RouteRegister.add('POST', 'photos', 'upload');
+RouteRegister.add('PUT', 'photos', 'modify');
+RouteRegister.add('GET', 'photos', 'delete');
+RouteRegister.add('POST', 'photos', 'like');
+RouteRegister.add('POST', 'photos', 'unlike');
+
 
 let server = new APIServer();
 server.start();

@@ -2,28 +2,12 @@
 export default class PhotoLike extends Model {
     
     constructor() {
-        this.likes = 0;
-        this.likedBy = new Set();
+      this.addField('ImageId', 'string');
+      this.addField('LikeCounter', 'integer');       
+      this.addField('LikedById', 'string');
+      
+      this.setKey("ImageId");
       }
     
-      like(user) {
-        if (!this.likedBy.has(user)) {
-          this.likes++;
-          this.likedBy.add(user);
-          this.updateLikes();
-        } else {
-          console.log(`${user} has already liked this picture.`);
-        }
-      }
-    
-      unlike(user) {
-        if (this.likedBy.has(user)) {
-          this.likes--;
-          this.likedBy.delete(user);
-          this.updateLikes();
-        } else {
-          console.log(`${user} has not liked this picture.`);
-        }
-      }
     
 }
