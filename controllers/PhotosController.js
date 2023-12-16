@@ -7,7 +7,7 @@ import Controller from './Controller.js';
 export default
     class Photos extends Controller {
     constructor(HttpContext) {
-        super(HttpContext, new Repository(new PhotoModel()), Authorizations.user());
+        super(HttpContext, new Repository(new PhotoModel()));
        //this.photoLikesRepository = new Repository(new PhotoLikeModel());
     }
 

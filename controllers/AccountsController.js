@@ -16,6 +16,9 @@ export default class AccountsController extends Controller {
         if (id != undefined) {
             if (Authorizations.readGranted(this.HttpContext, Authorizations.admin()))
                 this.HttpContext.response.JSON(this.repository.get(id));
+            else if (Authorizations.readGranted(this.HttpContext, Authorizations.user())){
+                this.HttpContext.response.JSON(this.repository.get(id));
+            }
             else
                 this.HttpContext.response.unAuthorized("Unauthorized access");
         }

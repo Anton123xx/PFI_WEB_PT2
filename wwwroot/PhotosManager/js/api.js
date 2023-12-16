@@ -5,7 +5,7 @@
 
 const serverHost = "http://localhost:5000";
 const photos_API = "/api/photos";
-const photoLikes_API = "/api/photolikes";
+const photoLikes_API = "/api/photoslike";
 class API {
     static initHttpState() {
         this.currentHttpError = "";
@@ -260,6 +260,21 @@ class API {
         });
     }
 
+    static CreatePhotoLikeCounter(data) {
+        API.initHttpState();
+        return new Promise(resolve => {
+            $.ajax({
+                url: serverHost + photoLikes_API +"/create",
+                type: 'POST',
+                headers: API.getBearerAuthorizationToken(),
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: data => { resolve(data) },
+                error: xhr => { console.log("erreur a la creation");API.setHttpErrorState(xhr); resolve(false); }
+            });
+        });
+    }
+
     static UpdatePhoto(data) {
         API.initHttpState();
         console.log(data);
@@ -280,10 +295,45 @@ class API {
         API.initHttpState();
         return new Promise(resolve => {
             $.ajax({
-                url: serverHost + photos_API + "/remove/" + id,
+                url: serverHost + "/api/photos/remove/" + id,
                 type: 'GET',
                 headers: API.getBearerAuthorizationToken(),
                 success: () => { resolve(true) },
+                error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
+            });
+        });
+    }
+
+    static GetPhotoLikesCounter(photoId) {
+        API.initHttpState();
+        let url = serverHost + photoLikes_API + `?ImageId=${photoId}`;
+        return new Promise(resolve => {
+            $.ajax({
+                url: url,
+                contentType: 'application/json',
+                type: 'GET',
+                headers: API.getBearerAuthorizationToken(),
+                success: (data, status, xhr) => {
+                    let ETag = xhr.getResponseHeader("ETag");
+                    resolve({ data, ETag });
+                },
+                error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
+            });
+        });
+    }
+
+    static unlikePhoto(photoId) {
+        API.initHttpState();
+        return new Promise(resolve => {
+            $.ajax({
+                url: serverHost + photoLikes_API + "/unlikePhoto/" + photoId,
+                contentType: 'application/json',
+                type: 'GET',
+                data: {},
+                headers: API.getBearerAuthorizationToken(),
+                success: () => {
+                    resolve(true);
+                },
                 error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
             });
         });
