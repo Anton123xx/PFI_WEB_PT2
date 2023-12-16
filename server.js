@@ -20,7 +20,7 @@ RouteRegister.add('POST', 'accounts', 'promote');
 ////POUR VAS CALL CONTROLLER DE PHOTO
 RouteRegister.add('POST', 'photo', 'upload');
 RouteRegister.add('PUT', 'photos', 'modify');
-RouteRegister.add('GET', 'photos', 'delete');
+RouteRegister.add('GET', 'photos', 'remove');
 RouteRegister.add('POST', 'photos', 'like');
 RouteRegister.add('POST', 'photos', 'unlike');
 

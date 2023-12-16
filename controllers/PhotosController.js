@@ -27,6 +27,41 @@ export default
             this.HttpContext.response.notImplemented();
     }
 
+    modify(photo) {
+        // empty asset members imply no change and there values will be taken from the stored record
+            if (this.repository != null) {
+                let foundedPhoto = this.repository.findByField("Id", photo.Id);
+                if (foundedPhoto != null) {
+                    let updatedphoto = this.repository.update(photo.Id, photo);
+                    if (this.repository.model.state.isValid) {
+                        this.HttpContext.response.updated(updatedphoto);
+                    }
+                    else {
+                        if (this.repository.model.state.inConflict){
+                            console.log("Conflict");
+                            this.HttpContext.response.conflict(this.repository.model.state.errors);
+                        }
+                        else{
+                            console.log("Bad request");
+                            this.HttpContext.response.badRequest(this.repository.model.state.errors);
+                        }
+                    }
+                } else{
+                    console.log("not found");
+                    this.HttpContext.response.notFound();
+                }
+                    
+            } else{
+                console.log("not Implemented");
+                this.HttpContext.response.notImplemented();
+            }
+                
+    }
+    
+    remove(id) { // warning! this is not an API endpoint
+            super.remove(id);
+    }
+
     /*
     like()
     {
@@ -34,15 +69,6 @@ export default
     }
 
     unLike()
-    {
-
-    }
-
-
-    
-
-
-    modify()
     {
 
     }

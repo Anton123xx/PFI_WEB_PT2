@@ -46,6 +46,8 @@
     font-size: 18px;
     font-weight: bold;
     color:rgb(0, 87, 204);
+    text-align: left;
+    cursor: default;
 }
 
 .photoDetailsOwner {
@@ -76,6 +78,18 @@
     grid-template-columns: auto 95px;
     align-items: center;
 }
+
+.photoOwnerModifBtn {
+    font-size: 18px;
+    color:dodgerblue;
+    display:grid;
+    grid-template-columns: auto 30px 30px;
+    text-align: right;
+}
+.ModifPhoto ,.deletePhoto{
+    cursor:pointer;
+}
+
 .likesSummary {
     display:grid;
     grid-template-columns: 60px 30px;

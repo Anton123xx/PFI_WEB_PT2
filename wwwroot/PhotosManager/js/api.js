@@ -262,9 +262,11 @@ class API {
 
     static UpdatePhoto(data) {
         API.initHttpState();
+        console.log(data);
+        console.log(data.Id);
         return new Promise(resolve => {
             $.ajax({
-                url: serverHost + photos_API + "/" + data.Id,
+                url: serverHost + photos_API + "/modify/" + data.Id,
                 type: 'PUT',
                 headers: API.getBearerAuthorizationToken(),
                 contentType: 'application/json',
@@ -278,8 +280,8 @@ class API {
         API.initHttpState();
         return new Promise(resolve => {
             $.ajax({
-                url: serverHost + photos_API + "/" + id,
-                type: 'DELETE',
+                url: serverHost + photos_API + "/remove/" + id,
+                type: 'GET',
                 headers: API.getBearerAuthorizationToken(),
                 success: () => { resolve(true) },
                 error: xhr => { API.setHttpErrorState(xhr); resolve(false); }

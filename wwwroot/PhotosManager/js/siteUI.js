@@ -248,6 +248,15 @@ async function adminDeleteAccount(userId) {
         renderError("Un problème est survenu.");
     }
 }
+
+async function RemovePhoto(photoId) {
+    if (await API.DeletePhoto(photoId)) {
+        renderPhotosList();
+    } else {
+        renderError("Un problème est survenu.");
+    }
+}
+
 async function deleteProfil() {
     let loggedUser = API.retrieveLoggedUser();
     if (loggedUser) {
@@ -463,11 +472,14 @@ async function renderPhotosList()////////////////
             for(const photo of photos.data){
                 photoRow = photoRow + `
                         <div class="photoLayout">
+                        <div class="photoOwnerModifBtn">
                         <span class="photoTitle">${photo.Title}</span>
+                        <span id="ModifPhoto" class="ModifPhoto" name="${photo.Id}"><i class="fa-solid fa-pen"></i></span>
+                        <span id="deletePhoto" class="deletePhoto" name="${photo.Id}"><i class="fa-solid fa-trash"></i></span></div>
                         `
                         ;
                         //Mettre la photo
-                        photoRow = photoRow + `<div class="photoImage" style="background-image:url('${photo.Image}')">`;
+                        photoRow = photoRow + `<div class="photoImage" id="photoImage" name="${photo.Id}" style="background-image:url('${photo.Image}')">`;
                         let user = await API.GetAccount(photo.OwnerId);
                         photoRow = photoRow + `<div class="UserAvatarSmall" style="background-image:url('${user.data.Avatar}')"></div>`;
                         if(photo.Shared){
@@ -484,8 +496,16 @@ async function renderPhotosList()////////////////
                 //<span class="photoCreationDate  ">${photo.LikeCounter}</span>   *** A METTRE EN HAUT ***
         }
             photoRow = photoRow + `</div>`; 
-            $("#content").append(photoRow);
+            $("#content").append(photoRow );
         }
+
+        $('.ModifPhoto').on('click', function(){
+            renderEditPhotoForm($(this).attr("name"));
+        });
+
+        $('.deletePhoto').on('click', function(){
+            renderConfirmDeletePhoto($(this).attr("name"));
+        });
 }
 
 
@@ -531,6 +551,149 @@ function getMonth(month){
             return "décembre";
     }
 }
+async function renderEditPhotoForm(photoID) {
+    let photo = await API.GetPhotosById(photoID);
+
+    timeout();
+    let loggedUser = API.retrieveLoggedUser();
+    if (loggedUser) {
+        eraseContent();
+        UpdateHeader("Modification de photo", "edit Photo");
+        $("#newPhotoCmd").hide();
+
+        let body = `
+        <br/>
+        <form class="form" id="updatePicForm"'>
+            
+               
+            <fieldset>
+                <legend>Informations</legend>
+                <input  value="${photo.Title}"
+                        type="text" 
+                        class="form-control Alpha" 
+                        name="Title" 
+                        id="Title"
+                        placeholder="Titre" 
+                        required 
+                        RequireMessage = 'Veuillez entrer un titre'
+                        InvalidMessage = 'Titre invalide'/>
+
+                
+                        <textarea
+                        class="form-control Alpha"
+                        name="Description"
+                        id="Description"
+                        placeholder="Description"
+                        
+                    >${photo.Description}</textarea>
+                    `;
+                let value;
+                    if(photo.Shared){
+                        value= "checked";
+                    }else{
+                        value ="unchecked";
+                    }
+                body = body +   `
+
+                <input  type="checkbox"   
+                        ${value}
+                        name="Share" 
+                        id="Share" 
+                        />
+
+                <label for="Share">Partagée</label>
+
+            </fieldset>
+            <fieldset>
+                <legend>Image</legend>
+                <div class='imageUploader' 
+                        newImage='true' 
+                        controlId='Image' 
+                        imageSrc='${photo.Image}' 
+                        waitingImage="images/Loading_icon.gif">
+            </div>
+            </fieldset>
+   
+            <input type='submit' name='submit' id='saveUser' value="Enregistrer" class="form-control btn-primary">
+        </form>
+        <div class="cancel">
+            <button class="form-control btn-secondary" id="abortCreateProfilCmd">Annuler</button>
+        </div>
+    `;
+        $("#content").append(body);
+        //$('#loginCmd').on('click', renderLoginForm);
+        initFormValidation(); // important do to after all html injection!
+        initImageUploaders();
+        $('#abortCreateProfilCmd').on('click', renderPhotos);
+        //addConflictValidation(API.checkConflictURL(), 'Email', 'saveUser');
+        $('#updatePicForm').on("submit",async function (event) {
+           // let photo = getFormData($('#updatePicForm'));
+            if(photo.Image === ""){
+                photo.Image = 'PhotoCloudLogo.png';
+            }
+            //Mettre la valeur de OwnerId
+            let loggedUser = API.retrieveLoggedUser();
+            Object.assign(photo,{OwnerId: loggedUser.Id })
+
+            //Mettre la valeur de Date
+            let date = Date.now();
+            Object.assign(photo,{Date: date })
+
+
+            //Mettre la valeur de Share
+            Object.assign(photo,{Shared: document.getElementById("Share").checked })
+            console.log(photo);
+            //document.getElementById("Share").checked 
+
+            
+            event.preventDefault();
+            showWaitingGif();
+            API.UpdatePhoto(photo);
+        });
+    }
+}
+
+async function renderConfirmDeletePhoto(photoID) {
+    timeout();
+    let photo = await API.GetPhotosById(photoID);
+    if (photo) {
+        let photoToDelete = await API.GetPhotosById(photoID);
+        if (!API.error) {
+            eraseContent();
+            UpdateHeader("Retrait de photo", "confirmDelete Picture");
+            $("#newPhotoCmd").hide();
+            $("#content").append(`
+                <div class="content loginForm">
+                    <br>
+                    <div class="form UserRow ">
+                        <h4> Voulez-vous vraiment effacer cette photo? </h4>
+                        <div class="UserContainer noselect">
+                            <div class="photoLayout">
+                            <div class="photoTitleContainer">
+                                    <span class="photoTitle">${photoToDelete.Title}</span>
+                            </div>
+                                <div class="photoImage" style="background-image:url('${photoToDelete.Image}')"></div>
+                                
+                            </div>
+                        </div>
+                    </div>           
+                    <div class="form">
+                        <button class="form-control btn-danger" id="deletePhotoCmd">Effacer</button>
+                        <br>
+                        <button class="form-control btn-secondary" id="abortDeletePhotoCmd">Annuler</button>
+                    </div>
+                </div>
+            `);
+            $("#deletePhotoCmd").on("click", function () {
+                RemovePhoto(photoToDelete.Id);
+            });
+            $("#abortDeletePhotoCmd").on("click", renderPhotosList);
+        } else {
+            renderError("Une erreur est survenue");
+        }
+    }
+}
+
 function renderVerify() {
     eraseContent();
     UpdateHeader("Vérification", "verify");
