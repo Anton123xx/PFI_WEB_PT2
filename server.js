@@ -18,7 +18,7 @@ RouteRegister.add('GET', 'accounts', 'conflict');
 RouteRegister.add('POST', 'accounts', 'block');
 RouteRegister.add('POST', 'accounts', 'promote');
 ////POUR VAS CALL CONTROLLER DE PHOTO
-RouteRegister.add('POST', 'photos', 'upload');
+RouteRegister.add('POST', 'photo', 'upload');
 RouteRegister.add('PUT', 'photos', 'modify');
 RouteRegister.add('GET', 'photos', 'delete');
 RouteRegister.add('POST', 'photos', 'like');

@@ -7,27 +7,14 @@ export default class Photo extends Model {
     constructor()
     {
         super();
-        this.addField('OwnerId', 'string');
         this.addField('Title', 'string');        
         this.addField('Description', 'string');
         this.addField('Image', 'asset');
+        this.addField('OwnerId', 'string');
         this.addField('Date','integer');
         this.addField('Shared','boolean');
 ///AJOUTER LIKE COUNTER ???????????
         //this.addField('LikeCounter', 'integer') = new PhotoLikeModel();
         this.setKey("Title");
-    }
-
-
-
-
-
-    bindExtraData(instance) {
-        console.log(instance);
-        instance = super.bindExtraData(instance);
-        let usersRepository = new Repository(new UserModel());
-        instance.Owner = usersRepository.get(instance.OwnerId);
-        instance.OwnerName = instance.Owner.Name;
-        return instance;
     }
 }

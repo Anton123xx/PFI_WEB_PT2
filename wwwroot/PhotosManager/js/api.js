@@ -249,16 +249,17 @@ class API {
         API.initHttpState();
         return new Promise(resolve => {
             $.ajax({
-                url: serverHost + photos_API,
+                url: serverHost + photos_API +"/upload",
                 type: 'POST',
                 headers: API.getBearerAuthorizationToken(),
                 contentType: 'application/json',
                 data: JSON.stringify(data),
                 success: data => { resolve(data) },
-                error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
+                error: xhr => { console.log("erreur a la creation");API.setHttpErrorState(xhr); resolve(false); }
             });
         });
     }
+
     static UpdatePhoto(data) {
         API.initHttpState();
         return new Promise(resolve => {

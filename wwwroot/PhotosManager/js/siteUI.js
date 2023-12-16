@@ -373,8 +373,8 @@ function renderNewPicForm()/////////////
                 <legend>Informations</legend>
                 <input  type="text" 
                         class="form-control Alpha" 
-                        name="Name" 
-                        id="Name"
+                        name="Title" 
+                        id="Title"
                         placeholder="Titre" 
                         required 
                         RequireMessage = 'Veuillez entrer un titre'
@@ -390,7 +390,8 @@ function renderNewPicForm()/////////////
 
                 <input  type="checkbox"   
                         name="Share" 
-                        id="Share" />
+                        id="Share" 
+                        />
 
                 <label for="Share">Partagée</label>
 
@@ -418,8 +419,22 @@ function renderNewPicForm()/////////////
     //addConflictValidation(API.checkConflictURL(), 'Email', 'saveUser');
     $('#uploadNewPicForm').on("submit", function (event) {
         let photo = getFormData($('#uploadNewPicForm'));
-        //delete profil.matchedPassword;
-        //delete profil.matchedEmail;
+
+        //Mettre la valeur de OwnerId
+        let loggedUser = API.retrieveLoggedUser();
+        Object.assign(photo,{OwnerId: loggedUser.Id })
+
+        //Mettre la valeur de OwnerId
+        let date = Date.now();
+        Object.assign(photo,{Date: date })
+
+
+        //Mettre la valeur de Share
+        Object.assign(photo,{Shared: document.getElementById("Share").checked })
+        console.log(photo);
+        //document.getElementById("Share").checked 
+
+        
         event.preventDefault();
         showWaitingGif();
         API.CreatePhoto(photo);

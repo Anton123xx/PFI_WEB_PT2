@@ -11,6 +11,22 @@ export default
        //this.photoLikesRepository = new Repository(new PhotoLikeModel());
     }
 
+    upload(photo)
+    {
+        if (this.repository != null) {
+            let newPhoto = this.repository.add(photo);
+            if (this.repository.model.state.isValid) {
+                this.HttpContext.response.created(newPhoto);
+            } else {
+                if (this.repository.model.state.inConflict)
+                    this.HttpContext.response.conflict(this.repository.model.state.errors);
+                else
+                    this.HttpContext.response.badRequest(this.repository.model.state.errors);
+            }
+        } else
+            this.HttpContext.response.notImplemented();
+    }
+
     /*
     like()
     {
@@ -23,10 +39,7 @@ export default
     }
 
 
-    upload()
-    {
-
-    }
+    
 
 
     modify()
