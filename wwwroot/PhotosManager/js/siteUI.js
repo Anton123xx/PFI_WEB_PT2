@@ -701,28 +701,28 @@ async function renderEditPhotoForm(photoID) {
         $('#abortCreateProfilCmd').on('click', renderPhotos);
         //addConflictValidation(API.checkConflictURL(), 'Email', 'saveUser');
         $('#updatePicForm').on("submit",async function (event) {
-           // let photo = getFormData($('#updatePicForm'));
-            if(photo.Image === ""){
-                photo.Image = 'PhotoCloudLogo.png';
+           let photoModified = getFormData($('#updatePicForm'));
+            if(photoModified.Image === ""){
+                photoModified.Image = 'PhotoCloudLogo.png';
             }
             //Mettre la valeur de OwnerId
             let loggedUser = API.retrieveLoggedUser();
-            Object.assign(photo,{OwnerId: loggedUser.Id })
+            Object.assign(photoModified,{OwnerId: loggedUser.Id })
 
             //Mettre la valeur de Date
             let date = Date.now();
-            Object.assign(photo,{Date: date })
+            Object.assign(photoModified,{Date: date })
 
 
             //Mettre la valeur de Share
-            Object.assign(photo,{Shared: document.getElementById("Share").checked })
-            console.log(photo);
+            Object.assign(photoModified,{Shared: document.getElementById("Share").checked })
+            console.log(photoModified);
             //document.getElementById("Share").checked 
 
             
             event.preventDefault();
             showWaitingGif();
-            API.UpdatePhoto(photo);
+            API.UpdatePhoto(photoModified);
         });
     }
 }
