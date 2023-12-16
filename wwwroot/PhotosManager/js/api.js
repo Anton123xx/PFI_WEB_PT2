@@ -274,7 +274,7 @@ class API {
             });
         });
     }
-
+/*
     static UpdatePhoto(data) {
         API.initHttpState();
         console.log(data);
@@ -291,6 +291,25 @@ class API {
             });
         });
     }
+  */
+    static UpdatePhoto(data) {
+        API.initHttpState();
+        return new Promise(resolve => {
+            $.ajax({
+                url: serverHost + photos_API + "/" + data.Id,
+                type: 'PUT',
+                headers: API.getBearerAuthorizationToken(),
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: (data, status, xhr) => {
+                    let ETag = xhr.getResponseHeader("ETag");
+                    resolve({ data, ETag });
+                },
+                error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
+            });
+        });
+    }
+    /*
     static DeletePhoto(id) {
         API.initHttpState();
         return new Promise(resolve => {
@@ -303,7 +322,22 @@ class API {
             });
         });
     }
-
+    */
+    static DeletePhoto(id) {
+        API.initHttpState();
+        return new Promise(resolve => {
+            $.ajax({
+                url: serverHost + photos_API + "/" + id,
+                type: 'DELETE',
+                headers: API.getBearerAuthorizationToken(),
+                success: (data, status, xhr) => {
+                    let ETag = xhr.getResponseHeader("ETag");
+                    resolve({ data, ETag });
+                },
+                error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
+            });
+        });
+    }
     static GetPhotoLikesCounter(photoId) {
         API.initHttpState();
         let url = serverHost + photoLikes_API + `?ImageId=${photoId}`;

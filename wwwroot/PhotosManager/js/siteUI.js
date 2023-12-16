@@ -758,6 +758,7 @@ async function renderConfirmDeletePhoto(photoID) {
                     </div>
                 </div>
             `);
+            initFormValidation(); // important do to after all html injection!
             $("#deletePhotoCmd").on("click", function () {
                 RemovePhoto(photoToDelete.Id);
             });
