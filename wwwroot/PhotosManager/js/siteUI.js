@@ -423,6 +423,9 @@ function renderNewPicForm()/////////////
     $('#uploadNewPicForm').on("submit", function (event) {
         let photo = getFormData($('#uploadNewPicForm'));
 
+        if(photo.Image === ""){
+            photo.Image = 'PhotoCloudLogo.png';
+        }
         //Mettre la valeur de OwnerId
         let loggedUser = API.retrieveLoggedUser();
         Object.assign(photo,{OwnerId: loggedUser.Id })
@@ -454,35 +457,38 @@ async function renderPhotosList()////////////////
             if (API.error) {
                 renderError();
             }else{
-                let photoRow = `<div class="photosLayout""> `;
-                photos.data.forEach((photo) => {
-                    
-                    
-                    photoRow = photoRow + `
-                            <div class="photoLayout">
-                            <span class="photoTitle">${photo.Title}</span>
-                            `;
-                            
-                            if(photo.Image !== ""){ 
-                                photoRow = photoRow + `<div class="photoImage" style="background-image:url('${photo.Image}')"></div>`;
-                            }
-                            else{
-                                photoRow = photoRow + `<div class="photoImage" style="background-image:url(http://localhost:5000/images/PhotoCloudLogo.png)"></div>`;
-                            }
 
-                            
+            let photoRow = `<div class="photosLayout""> `;
+               
+            for(const photo of photos.data){
+                photoRow = photoRow + `
+                        <div class="photoLayout">
+                        <span class="photoTitle">${photo.Title}</span>
+                        `
+                        ;
+                        //Mettre la photo
+                        photoRow = photoRow + `<div class="photoImage" style="background-image:url('${photo.Image}')">`;
+                        let user = await API.GetAccount(photo.OwnerId);
+                        photoRow = photoRow + `<div class="UserAvatarSmall" style="background-image:url('${user.data.Avatar}')"></div>`;
+                        if(photo.Shared){
+                            photoRow = photoRow + `<div class="UserAvatarSmall" style="background-image:url('http://localhost:5000/assetsRepository/shared.png');
+                            background-color: #ffffff70;"></div>`;
+                        }
+                        photoRow = photoRow + `</div>`;
 
-                            photoRow = photoRow +`
-                            <div class="photoCreationDate  ">${taskDate(photo.Date)}</div>
-                            
-                            </div>   
-                    `;
-                    //<span class="photoCreationDate  ">${photo.LikeCounter}</span>   *** A METTRE EN HAUT ***
-            });
+                        //Date creation + compteur de like
+                        photoRow = photoRow +`
+                        <div class="photoCreationDate"><span>${taskDate(photo.Date)}</span><span style="text-align: right;">${photo.LikeCounter}</span></div>
+                        </div>
+                `;
+                //<span class="photoCreationDate  ">${photo.LikeCounter}</span>   *** A METTRE EN HAUT ***
+        }
             photoRow = photoRow + `</div>`; 
             $("#content").append(photoRow);
         }
 }
+
+
 function taskDate(dateMilli) {
     let yourDate = new Date(dateMilli).toLocaleDateString("fr-FR", {year: 'numeric', month: '2-digit', day: '2-digit', weekday:"long", hour: '2-digit', hour12: false, minute:'2-digit', second:'2-digit'});
     
