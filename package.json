@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "date-and-time": "^2.4.1",
+    "moment": "^2.29.4",
     "nodemailer": "^6.8.0",
     "properties-reader": "^2.1.1",
     "query-string": "^8.1.0",

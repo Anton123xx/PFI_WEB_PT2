@@ -1,4 +1,7 @@
 //<span class="cmdIcon fa-solid fa-ellipsis-vertical"></span>
+
+
+
 let contentScrollPosition = 0;
 let sortType = "date";
 let keywords = "";
@@ -424,7 +427,7 @@ function renderNewPicForm()/////////////
         let loggedUser = API.retrieveLoggedUser();
         Object.assign(photo,{OwnerId: loggedUser.Id })
 
-        //Mettre la valeur de OwnerId
+        //Mettre la valeur de Date
         let date = Date.now();
         Object.assign(photo,{Date: date })
 
@@ -442,39 +445,85 @@ function renderNewPicForm()/////////////
 }
 async function renderPhotosList()////////////////
 {
+    //$("#content").append("en construction");
     eraseContent();
-    $("#content").append("en construction");
-
-    /*
-    let everyPic = await API.GetPhotos();
-
-    if (API.error) {
-        renderError();//FAUT FIGURE OUT UPLOAD DE PICS AVANT PCQ YA ZERO PICS PENSE POUR SA 
-    } else {
-        everyPic.forEach((photo) => {
-            if(shared)///CHEKER RENDERMANAGEDUSER POUR INSPIRATION
-            { //FAUDRA DONNER ID POUR FAIRE LE ONCLICK(RENDERPIC)
-                let photoRow = `
-                <div class="photosLayout""> 
+    timeout();
+    
+    UpdateHeader('Liste des photos', 'pictures list')
+            let photos = await API.GetPhotos();
+            if (API.error) {
+                renderError();
+            }else{
+                let photoRow = `<div class="photosLayout""> `;
+                photos.data.forEach((photo) => {
                     
-                        <div class="photoLayout">
-                        <span class="photoTitle">${photo.Title}</span>
-                        <span class="photoImage">${photo.Image}</span>
-                        <span class="photoCreationDate  ">${photo.Date}</span>
-                        <span class="photoCreationDate  ">${photo.LikeCounter}</span>
-                        </div>
-                        
-                </div>           
-                `;
-                        console.log(photo);
-            }
-          
-        });
-        $("#content").append(photoRow);
+                    
+                    photoRow = photoRow + `
+                            <div class="photoLayout">
+                            <span class="photoTitle">${photo.Title}</span>
+                            `;
+                            
+                            if(photo.Image !== ""){ 
+                                photoRow = photoRow + `<div class="photoImage" style="background-image:url('${photo.Image}')"></div>`;
+                            }
+                            else{
+                                photoRow = photoRow + `<div class="photoImage" style="background-image:url(http://localhost:5000/images/PhotoCloudLogo.png)"></div>`;
+                            }
+
+                            
+
+                            photoRow = photoRow +`
+                            <div class="photoCreationDate  ">${taskDate(photo.Date)}</div>
+                            
+                            </div>   
+                    `;
+                    //<span class="photoCreationDate  ">${photo.LikeCounter}</span>   *** A METTRE EN HAUT ***
+            });
+            photoRow = photoRow + `</div>`; 
+            $("#content").append(photoRow);
+        }
+}
+function taskDate(dateMilli) {
+    let yourDate = new Date(dateMilli).toLocaleDateString("fr-FR", {year: 'numeric', month: '2-digit', day: '2-digit', weekday:"long", hour: '2-digit', hour12: false, minute:'2-digit', second:'2-digit'});
+    
+    let day = yourDate.substring(yourDate.indexOf('/') - 2,yourDate.indexOf('/'));
+    let month = yourDate.substring(yourDate.indexOf('/') + 1,yourDate.indexOf('/') +3);
+    let year = yourDate.substring(yourDate.indexOf('/') + 4,yourDate.indexOf('/') +8);
+    let time = yourDate.substring(yourDate.indexOf('/') + 8);
+
+    let finalString = yourDate.substring(0,yourDate.indexOf(' '))+ " le " + day + " " + getMonth(month) + " " + year + " @ " + time;
+    return finalString;
+}
+
+function getMonth(month){
+    switch(month){
+        case "0":
+            return "null";
+        case "1":
+            return "janvier";
+        case "2":
+            return "février";
+        case "3":
+            return "mars";
+        case "4":
+            return "avril";
+        case "5":
+            return "mai";
+        case "6":
+            return "juin";
+        case "7":
+            return "juillet";
+        case '8':
+            return "août";
+        case '9':
+            return "septembre";
+        case '10':
+            return "octobre";
+        case '11':
+            return "novembre ";
+        case '12':
+            return "décembre";
     }
-
-
-    */
 }
 function renderVerify() {
     eraseContent();
