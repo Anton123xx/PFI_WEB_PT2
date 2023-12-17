@@ -355,6 +355,23 @@ class API {
             });
         });
     }
+    static GetPhotoLikes() {
+        API.initHttpState();
+        let url = serverHost + photoLikes_API ;
+        return new Promise(resolve => {
+            $.ajax({
+                url: url,
+                contentType: 'application/json',
+                type: 'GET',
+                headers: API.getBearerAuthorizationToken(),
+                success: (data, status, xhr) => {
+                    let ETag = xhr.getResponseHeader("ETag");
+                    resolve({ data, ETag });
+                },
+                error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
+            });
+        });
+    }
 
     static unlikePhoto(photoId) {
         API.initHttpState();
