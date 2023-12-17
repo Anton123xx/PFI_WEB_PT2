@@ -678,7 +678,7 @@ async function renderPhotosList()////////////////
                 }
 
             console.log(photolikeRef.Id);
-            API.unlikePhoto(photolikeRef.Id);
+            API.UnlikePhoto(photolikeRef.Id);
         });
         
 }
@@ -797,11 +797,9 @@ async function renderEditPhotoForm(photoID) {
         </div>
     `;
         $("#content").append(body);
-        //$('#loginCmd').on('click', renderLoginForm);
         initFormValidation(); // important do to after all html injection!
         initImageUploaders();
         $('#abortCreateProfilCmd').on('click', renderPhotos);
-        //addConflictValidation(API.checkConflictURL(), 'Email', 'saveUser');
         $('#updatePicForm').on("submit",async function (event) {
 
 
@@ -818,7 +816,7 @@ async function renderEditPhotoForm(photoID) {
             }
             let result = API.UpdatePhoto(photoModified)
             if (result != null) {
-                currentETagPhotos = result.ETag
+                currentETagPhotos = result.ETag;
                 renderPhotosList();
             }
             else {

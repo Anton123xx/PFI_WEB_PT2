@@ -373,11 +373,14 @@ class API {
         });
     }
 
-    static unlikePhoto(photoId) {
+    
+    static UnlikePhoto(photoId) {
+
+        ///jai fix url
         API.initHttpState();
         return new Promise(resolve => {
             $.ajax({
-                url: serverHost + photoLikes_API + "/unlikePhoto/" + photoId,
+                url: serverHost + photoLikes_API + "/" + photoId,
                 contentType: 'application/json',
                 type: 'GET',
                 data: {},
