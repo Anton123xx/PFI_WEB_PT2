@@ -10,6 +10,7 @@ export default
        //this.photoLikesRepository = new Repository(new PhotoLikeModel());
     }
 
+    /*
     create(photoLike)
     {
         if (this.repository != null) {

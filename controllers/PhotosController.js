@@ -8,7 +8,7 @@ export default
     class Photos extends Controller {
     constructor(HttpContext) {
         super(HttpContext, new Repository(new PhotoModel()));
-       //this.photoLikesRepository = new Repository(new PhotoLikeModel());
+       this.photoLikesRepository = new Repository(new PhotoLikeModel());
     }
 
     upload(photo)
@@ -60,6 +60,7 @@ export default
     
     remove(id) { // warning! this is not an API endpoint
             super.remove(id);
+            this.photoLikesRepository.keepByFilter(like => like.ImageId != id);
     }
 
     /*

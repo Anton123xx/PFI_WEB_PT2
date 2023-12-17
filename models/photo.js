@@ -1,6 +1,6 @@
 import Model from './model.js';
 import UserModel from './user.js';
-import PhotoLikeModel from './photoLike.js';/////WHAT THE FUCK
+import PhotoLikeModel from './photoLike.js';
 import Repository from '../models/repository.js';
 
 export default class Photo extends Model {
@@ -13,8 +13,19 @@ export default class Photo extends Model {
         this.addField('OwnerId', 'string');
         this.addField('Date','integer');
         this.addField('Shared','boolean');
-///AJOUTER LIKE COUNTER ???????????
-        //this.addField('LikeCounter', 'integer') = new PhotoLikeModel();
+
+    
         this.setKey("Title");
     }
+
+    
+    bindExtraData(instance) {
+        instance = super.bindExtraData(instance);
+        instance.Ownerid = instance.OwnerId;
+
+        let photoLikesRepository = new Repository(new PhotoLikeModel());
+       instance.Likes = (photoLikesRepository.findByFilter(like => like.ImageId == instance.Id)).length;
+       return instance;
+    }
+    
 }

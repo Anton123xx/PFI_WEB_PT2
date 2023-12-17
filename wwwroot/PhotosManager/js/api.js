@@ -264,7 +264,7 @@ class API {
         API.initHttpState();
         return new Promise(resolve => {
             $.ajax({
-                url: serverHost + photoLikes_API +"/create",
+                url: serverHost + photoLikes_API + "/create/" + data.Id,
                 type: 'POST',
                 headers: API.getBearerAuthorizationToken(),
                 contentType: 'application/json',
@@ -382,7 +382,7 @@ class API {
             $.ajax({
                 url: serverHost + photoLikes_API + "/" + photoId,
                 contentType: 'application/json',
-                type: 'GET',
+                type: 'DELETE',
                 data: {},
                 headers: API.getBearerAuthorizationToken(),
                 success: () => {
@@ -392,6 +392,27 @@ class API {
             });
         });
     }
+
+        
+    static LikePhoto(data) {
+
+        ///jai fix url
+        API.initHttpState();
+        return new Promise(resolve => {
+            $.ajax({
+                url: serverHost + photoLikes_API,
+                contentType: 'application/json',
+                type: 'POST',
+                data: JSON.stringify(data),
+                headers: API.getBearerAuthorizationToken(),
+                success: () => {
+                    resolve(true);
+                },
+                error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
+            });
+        });
+    }
+
 
     
 }
