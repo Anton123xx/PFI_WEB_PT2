@@ -638,7 +638,8 @@ async function renderEditPhotoForm(photoID) {
         let body = `
         <br/>
         <form class="form" id="updatePicForm"'>
-            
+        <input type="hidden" id="OwnerId" value="${photo.OwnerId}">
+        <input type="hidden" id="Date" value="${photo.Date}">
                
             <fieldset>
                 <legend>Informations</legend>
@@ -687,7 +688,7 @@ async function renderEditPhotoForm(photoID) {
                         waitingImage="images/Loading_icon.gif">
             </div>
             </fieldset>
-   
+         
             <input type='submit' name='submit' id='saveUser' value="Enregistrer" class="form-control btn-primary">
         </form>
         <div class="cancel">
@@ -701,28 +702,56 @@ async function renderEditPhotoForm(photoID) {
         $('#abortCreateProfilCmd').on('click', renderPhotos);
         //addConflictValidation(API.checkConflictURL(), 'Email', 'saveUser');
         $('#updatePicForm').on("submit",async function (event) {
-           let photoModified = getFormData($('#updatePicForm'));
-            if(photoModified.Image === ""){
-                photoModified.Image = 'PhotoCloudLogo.png';
+
+
+
+            let photoModified = getFormData($('#updatePicForm'));
+            console.log(photoModified);
+            event.preventDefault();
+            showWaitingGif();
+            if (photoModified.Shared == "on") {
+                photoModified.Shared = true;
             }
+            else {
+                photoModified.Shared = false;
+            }
+            let result = API.UpdatePhoto(photoModified)
+            if (result != null) {
+                currentETagPhotos = result.ETag
+                renderPhotosList();
+            }
+            else {
+                renderError();
+            }
+
+
+
+
+
+
+
+           //let photoModified = getFormData($('#updatePicForm'));
+            //if(photoModified.Image === ""){
+                //photoModified.Image = 'PhotoCloudLogo.png';
+            //}
             //Mettre la valeur de OwnerId
-            let loggedUser = API.retrieveLoggedUser();
-            Object.assign(photoModified,{OwnerId: loggedUser.Id })
+            //let loggedUser = API.retrieveLoggedUser();
+            //Object.assign(photoModified,{OwnerId: loggedUser.Id })
 
             //Mettre la valeur de Date
-            let date = Date.now();
-            Object.assign(photoModified,{Date: date })
+           // let date = Date.now();
+            //Object.assign(photoModified,{Date: date })
 
 
             //Mettre la valeur de Share
-            Object.assign(photoModified,{Shared: document.getElementById("Share").checked })
-            console.log(photoModified);
+           // Object.assign(photoModified,{Shared: document.getElementById("Share").checked })
+            //console.log(photoModified);
             //document.getElementById("Share").checked 
 
             
-            event.preventDefault();
-            showWaitingGif();
-            API.UpdatePhoto(photoModified);
+            //event.preventDefault();
+            //showWaitingGif();
+           // API.UpdatePhoto(photoModified);
         });
     }
 }
