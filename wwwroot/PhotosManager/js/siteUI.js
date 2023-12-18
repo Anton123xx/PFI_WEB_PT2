@@ -1363,6 +1363,10 @@ function renderEditProfilForm() {
             let profil = getFormData($('#editProfilForm'));
             delete profil.matchedPassword;
             delete profil.matchedEmail;
+
+            if(profil.VerifyCode == null)
+             Object.assign(profil, { VerifyCode: "verified" });
+
             event.preventDefault();
             showWaitingGif();
             editProfil(profil);
