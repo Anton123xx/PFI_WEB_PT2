@@ -1,7 +1,7 @@
 //<span class="cmdIcon fa-solid fa-ellipsis-vertical"></span>
 
 
-
+let basePhotoRoot = 'http://localhost:5000/assetsRepository/';
 let contentScrollPosition = 0;
 let sortType = "date";
 let keywords = "";
@@ -81,21 +81,25 @@ function attachCmd() {
 
     $('#sortByDateCmd').on('click', function () {
         queryString = "?sort=Date";
+        sortType = "date";
         refreshHeader();
         renderPhotosList();
     });
     $('#sortByOwnersCmd').on('click', function () {
         queryString = "?sort=OwnerId";
+        sortType = "users";
         refreshHeader();
         renderPhotosList();
     });
     $('#sortByLikesCmd').on('click', function () {
         queryString = "?sort=Likes,desc";
+        sortType = "like";
         refreshHeader();
         renderPhotosList();
     });
     $('#ownerOnlyCmd').on('click', function () {
         queryString = "?OwnerId=" + (API.retrieveLoggedUser()).Id;
+        sortType = "owner";
         refreshHeader();
         renderPhotosList();
     });
@@ -215,7 +219,12 @@ function UpdateHeader(viewTitle, viewName) {
                 <i class="cmdIcon fa fa-search" id="setSearchKeywordsCmd"></i>
             </div>
         `);
-    } else {
+    } 
+
+    else if(sortType == "users"){
+
+    }
+    else {
         $("#customHeader").hide();
     }
     attachCmd();
@@ -816,7 +825,16 @@ async function renderEditPhotoForm(photoID) {
             else {
                 photoModified.Shared = false;
             }
-            let result = API.UpdatePhoto(photoModified)
+            Object.assign(photoModified, { OwnerId: photo.OwnerId });
+            Object.assign(photoModified, { Date: photo.Date });
+            Object.assign(photoModified, { Id: photo.Id });
+
+            if(photoModified.Image === ''){
+
+                photoModified.Image = photo.Image.substring(basePhotoRoot.length);
+            }
+
+            let result = API.UpdatePhoto(photoModified);
             if (result != null) {
                 currentETagPhotos = result.ETag;
                 renderPhotosList();
