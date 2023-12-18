@@ -949,9 +949,9 @@ async function renderPhotosDetails(photoID)////////////////
                     `;
 
     //Mettre la photo
-    photoRow = photoRow + `<div class="photoDetailsLargeImage" id="photoImage" name="${photo.Id}" style="background-image:url('${photo.Image}');">`;
-
-    photoRow = photoRow + `</div>`;
+    photoRow = photoRow + `<div class="photoDetailsLargeImage" id="photoImage" name="${photo.Id}">
+                                <img src=${photo.Image}>
+                            </div>`;
 
     //Date creation + compteur de like
     photoRow = photoRow + ` <div class="photoCreationDate"><span>${taskDate(photo.Date)}</span> <div class="likesSummary">
