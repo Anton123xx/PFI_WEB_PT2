@@ -344,7 +344,6 @@ class API {
         return new Promise(resolve => {
             $.ajax({
                 url: url,
-                contentType: 'application/json',
                 type: 'GET',
                 headers: API.getBearerAuthorizationToken(),
                 success: (data, status, xhr) => {
@@ -355,13 +354,25 @@ class API {
             });
         });
     }
+    static GetPhotosById(id) {
+        API.initHttpState();
+        return new Promise(resolve => {
+            $.ajax({
+                url: serverHost + photos_API + "/" + id,
+                type: 'GET',
+                headers: API.getBearerAuthorizationToken(),
+                success: data => { resolve(data); },
+                error: xhr => { API.setHttpErrorState(xhr); resolve(false); }
+            });
+        });
+    }
+
     static GetPhotoLikes() {
         API.initHttpState();
         let url = serverHost + photoLikes_API ;
         return new Promise(resolve => {
             $.ajax({
                 url: url,
-                contentType: 'application/json',
                 type: 'GET',
                 headers: API.getBearerAuthorizationToken(),
                 success: (data, status, xhr) => {

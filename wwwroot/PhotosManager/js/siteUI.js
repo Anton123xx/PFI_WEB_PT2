@@ -949,18 +949,18 @@ async function renderPhotosDetails(photoID)////////////////
                     `;
 
     //Mettre la photo
-    photoRow = photoRow + `<div class="photoDetailsLargeImage" id="photoImage" name="${photo.Id}">
+    photoRow = photoRow + `<div class="photoDetailsLargeImage" id="photoImage" name="${photo.Id}" ">
                                 <img src=${photo.Image}>
                             </div>`;
 
     //Date creation + compteur de like
-    photoRow = photoRow + ` <div class="photoCreationDate"><span>${taskDate(photo.Date)}</span> <div class="likesSummary">
+    photoRow = photoRow + ` <div class="photoDetailsCreationDate"><span>${taskDate(photo.Date)}</span> <div class="likesSummary">
         <span>${photoLikes.data.length}</span>`;
 
     if (!hasILiked)
-        photoRow = photoRow + `<span id="LikePhoto" class="likesBtn" name="${photo.Id}"><i class="fa-regular fa-thumbs-up"></i></span>`;
+        photoRow = photoRow + `<span id="LikePhoto" class="likesBtn" name="${photo.Id}"><i class="fa-regular fa-thumbs-up"></i></span><span class="details">${await NameHowLiked(photo)}</span>`;
     else
-        photoRow = photoRow + `<span id="UnlikePhoto" class="unlikesBtn" name="${photo.Id}"><i class="fa fa-thumbs-up"></i></span>`;
+        photoRow = photoRow + `<span id="UnlikePhoto" class="unlikesBtn" name="${photo.Id}"><i class="fa fa-thumbs-up"></i></span><span class="details">${await NameHowLiked(photo)}</span>`;
     photoRow = photoRow + `</div></div></div>`;
 
 
@@ -998,6 +998,22 @@ async function renderPhotosDetails(photoID)////////////////
         RemoveLike(photolikeRef.Id);
         //API.UnlikePhoto(photolikeRef.Id);
     });
+}
+
+async function NameHowLiked(photo){
+    
+    const photoLikes = await API.GetPhotoLikesCounter(photo.Id);
+
+    let text = "";
+    text = text + `<span class="hidden-info">`;
+    for (var i = 0; i < photoLikes.data.length && i <10; i++) {
+        //Afficher la liste des gens qui ont like
+
+        let user = await API.GetAccount(photoLikes.data[i].LikedById);
+        text = text + `${user.data.Name}<br>`;
+    }
+    text = text + `</span>`;
+    return text;
 }
 
 function renderVerify() {

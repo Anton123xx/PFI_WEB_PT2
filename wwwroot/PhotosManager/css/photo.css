@@ -94,23 +94,55 @@
     grid-template-columns: 60px 30px;
     align-items: center;
     text-align: right;
+    
 }
 .photoDetailsCreationDate {
     color:dodgerblue;
     margin:5px;
     display:grid;
-    grid-template-columns: auto 95px;
+    grid-template-columns: 70% 95px;
     align-items: center;
 }
 .photoDetailsLargeImage {
-    width:100%;
+    max-width:1000px;
     object-fit: cover;
     padding: 5px;
 }
 
 img{
-    max-width: 100%;
+    max-width: inherit;
     max-height: 100%;
 }
+
+.likesBtn , .unlikesBtn{
+      height: 18px;
+      width: 18px;
+      line-height: 1;
+      font-weight: bold;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+}
+.details {
+    height: fit-content;
+}
+
+.likesBtn:hover + .details .hidden-info,.unlikesBtn:hover + .details .hidden-info{
+    overflow: visible;
+    opacity: 1;
+  }
+  
+  .hidden-info{
+    position: absolute;
+    width: 225px;
+    text-align: left;
+    background: black;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity .25s ease-in-out;
+    color:white;
+    font-size: 1.2em;
+  }
+
 
 
