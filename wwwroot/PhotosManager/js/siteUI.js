@@ -307,9 +307,9 @@ async function adminDeleteAccount(userId) {
         renderError("Un problème est survenu.");
     }
 }
-async function AddLike(data) {
+async function AddLike(data,wheretoRefresh) {
     if (await API.LikePhoto(data)) {
-        renderPhotosList();
+            renderPhotosList();
     } else {
         renderError("Un problème est survenu.");
     }
@@ -533,7 +533,6 @@ async function renderPhotosList()////////////////
 {
     //$("#content").append("en construction");
     eraseContent();
-    timeout();
 
     UpdateHeader('Liste des photos', 'pictures list');
     let photos = await API.GetPhotos(queryString);
@@ -671,14 +670,24 @@ async function renderPhotosList()////////////////
         renderPhotosDetails($(this).attr("name"));
     });
 
-    $('.likesBtn').on('click', function (event) {
-        event.preventDefault();
-        showWaitingGif();
+    $('.likesBtn').on('click', async function (event) {
+        let photo = await API.GetPhotosById($(this).attr("name"));
         const data = { ImageId: `${$(this).attr("name")}`, LikedById: `${loggedUser.Id}` };
-        AddLike(data);
+
+        API.LikePhoto(data);
+
+        let result = simulateUpdate(photo);
+        if (result != null) {
+            currentETagPhotos = result.ETag;
+            renderPhotosList();
+        }
+        else {
+            renderError();
+        }
     });
     $('.unlikesBtn').on('click', async function () {
         const photoLikes = await API.GetPhotoLikesCounter($(this).attr("name"));
+        let photo = await API.GetPhotosById($(this).attr("name"));
         let photolikeRef;
         for (var i = 0; i < photoLikes.data.length; i++) {
             if (photoLikes.data[i].LikedById === `${loggedUser.Id}`) {
@@ -686,9 +695,16 @@ async function renderPhotosList()////////////////
                 break;
             }
         }
+        API.UnlikePhoto(photolikeRef.Id);
 
-        console.log(photolikeRef.Id);
-        RemoveLike(photolikeRef.Id);
+        let result = simulateUpdate(photo);
+        if (result != null) {
+            currentETagPhotos = result.ETag;
+            renderPhotosList();
+        }
+        else {
+            renderError();
+        }
         ///API.UnlikePhoto(photolikeRef.Id);
     });
 
@@ -835,12 +851,12 @@ async function renderEditPhotoForm(photoID) {
             }
 
             let result = API.UpdatePhoto(photoModified);
-            if (result != null) {
+            if (result === null) {
                 currentETagPhotos = result.ETag;
                 renderPhotosList();
             }
             else {
-                renderError();
+                
             }
 
 
@@ -918,14 +934,12 @@ async function renderConfirmDeletePhoto(photoID) {
 
 async function renderPhotosDetails(photoID)////////////////
 {
-
-
     //$("#content").append("en construction");
-    eraseContent();
     timeout();
+    eraseContent();
     let loggedUser = API.retrieveLoggedUser();
     let photo = await API.GetPhotosById(photoID);
-    UpdateHeader('Détails', 'pictures details')
+    UpdateHeader('Détails', 'pictures details');
     const photoLikes = await API.GetPhotoLikesCounter(photoID);
     let hasILiked = false;
 
@@ -978,14 +992,21 @@ async function renderPhotosDetails(photoID)////////////////
     $('.deletePhoto').on('click', function () {
         renderConfirmDeletePhoto($(this).attr("name"));
     });
-    $('.likesBtn').on('click', function (event) {
-        event.preventDefault();
-        showWaitingGif();
+    $('.likesBtn').on('click', async function (event) {
         const data = { ImageId: `${$(this).attr("name")}`, LikedById: `${loggedUser.Id}` };
-        AddLike(data);
+
+        API.LikePhoto(data);
+
+        let result = simulateUpdate(photo);
+        if (result != null) {
+            renderPhotosDetails(photoID);
+        }
+        else {
+            renderError();
+        }
         //API.CreatePhotoLikeCounter(data);
     });
-    $('.unlikesBtn').on('click', async function () {
+    $('.unlikesBtn').on('click', async function (event) {
         const photoLikes = await API.GetPhotoLikesCounter($(this).attr("name"));
         let photolikeRef;
         for (var i = 0; i < photoLikes.data.length; i++) {
@@ -994,10 +1015,23 @@ async function renderPhotosDetails(photoID)////////////////
                 break;
             }
         }
-        console.log(photolikeRef.Id);
-        RemoveLike(photolikeRef.Id);
-        //API.UnlikePhoto(photolikeRef.Id);
+
+        API.UnlikePhoto(photolikeRef.Id);
+
+        let result = simulateUpdate(photo);
+        if (result != null) {
+            renderPhotosDetails(photoID);
+        }
+        else {
+            renderError();
+        }
     });
+}
+
+function simulateUpdate(photo){
+    photo.Image = photo.Image.substring(basePhotoRoot.length);
+    let result = API.UpdatePhoto(photo);
+    return result;
 }
 
 async function NameHowLiked(photo){
