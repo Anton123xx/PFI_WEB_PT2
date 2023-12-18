@@ -1,7 +1,7 @@
 //<span class="cmdIcon fa-solid fa-ellipsis-vertical"></span>
 
 
-let basePhotoRoot = 'http://localhost:5000/assetsRepository/';
+let basePhotoRoot = 'https://glittery-flossy-august.glitch.me/assetsRepository/';
 let contentScrollPosition = 0;
 let sortType = "date";
 let keywords = "";
@@ -630,7 +630,7 @@ async function renderPhotosList()////////////////
 
                     if (user.data.Id === loggedUser.Id) {
                         if (photo.Shared) {
-                            photoRow = photoRow + `<div class="UserPhotoAvatarSmall" style="background-image:url('http://localhost:5000/assetsRepository/shared.png');
+                            photoRow = photoRow + `<div class="UserPhotoAvatarSmall" style="background-image:url('https://glittery-flossy-august.glitch.me/shared.png');
                                 background-color: #ffffff70;"></div>`;
                         }
                     }
